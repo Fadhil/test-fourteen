@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: fourteen-livebook-service
+  labels:
+    app: livebook
+    livebook_app_name: fourteen-livebook-app
+spec:
+  internalTrafficPolicy: Cluster
+  ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: livebook
+    livebook_app_name: fourteen-livebook
+  sessionAffinity: ClientIP
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: fourteen-livebook
+  labels:
+    app: livebook
+    livebook_app_name: fourteen-livebook-app
+spec:
+  containers:
+    - name: my-container
+      image: ghcr.io/livebook-dev/livebook:0.9.3
+      ports:
+        - containerPort: 8080
+      env:
+        - name: LIVEBOOK_APP_SERVICE_NAME
+          value: "fourteen-livebook-service"
+        - name: LIVEBOOK_PASSWORD
+          value: "passwordless"
+        - name: RELEASE_NODE
+          value: "fourteen-livebook@127.0.0.1"
+        - name: RELEASE_COOKIE
+          value: "mysecretcookie"
+        - name: RELEASE_DISTRIBUTION
+          value: "name"
+        - name: LIVEBOOK_DEFAULT_RUNTIME
+          value: "attached:test_fourteen@fourteen-app.default.svc.cluster.local:mysecretcookie"

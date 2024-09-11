@@ -1,0 +1,93 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: jemputan-db
+spec:
+  selector:
+    app: jemputan-db
+  ports:
+    - protocol: TCP
+      port: 5432
+      name: db
+      targetPort: 5432
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fourteen-app
+spec:
+  selector:
+    app: fourteen-app
+  ports:
+    - protocol: TCP
+      port: 80
+      name: web
+      targetPort: 80
+    - name: epmd
+      port: 4369
+      targetPort: 4369
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fourteen-app-headless
+spec:
+  selector:
+    app: fourteen-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+  clusterIP: None
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fourteen-app
+spec:
+  selector:
+    matchLabels:
+      app: fourteen-app
+  replicas: 1 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: fourteen-app
+    spec:
+      containers:
+        - name: fourteen-app
+          image: fourteen
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 80
+          env:
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: RELEASE_DISTRIBUTION
+              value: "test_fourteen"
+            - name: RELEASE_NODE
+              value: "test_fourteen@$(POD_IP)"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: jemputan-db
+  labels:
+    app: jemputan-db
+spec:
+  containers:
+    - name: postgres
+      image: postgres:13.6-alpine3.15
+      imagePullPolicy: IfNotPresent
+      env:
+        - name: POSTGRES_USER
+          value: "postgres"
+        - name: POSTGRES_PASSWORD
+          value: "password"
+        - name: POSTGRES_DB
+          value: "app_db"
