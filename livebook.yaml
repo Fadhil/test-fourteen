@@ -37,9 +37,10 @@ spec:
           value: "passwordless"
         - name: RELEASE_NODE
           value: "fourteen-livebook@127.0.0.1"
-        - name: RELEASE_COOKIE
+        - name: LIVEBOOK_COOKIE
           value: "mysecretcookie"
         - name: RELEASE_DISTRIBUTION
-          value: "name"
+          value: "test_fourteen"
         - name: LIVEBOOK_DEFAULT_RUNTIME
-          value: "attached:test_fourteen@fourteen-app.default.svc.cluster.local:mysecretcookie"
+          value: "attached:test_fourteen@10.244.4.102:mysecretcookie"
+          # value: "standalone"
