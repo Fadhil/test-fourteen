@@ -51,8 +51,10 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: status.podIP
+        - name: RELEASE_COOKIE
+          value: "mysecondtestcookie"
         - name: RELEASE_DISTRIBUTION
-          value: "test_fourteen"
+          value: "name"
         - name: RELEASE_NODE
           value: "test_fourteen@$(POD_IP)"
 ---

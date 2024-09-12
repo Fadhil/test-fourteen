@@ -1,5 +1,5 @@
 ARG BUILDER_IMAGE="hexpm/elixir:1.14.5-erlang-25.0.4-debian-bullseye-20240904-slim"
-ARG RUNNER_IMAGE="debian:bullseye-20240904-slim"
+ARG RUNNER_IMAGE="debian:bullseye-20240904"
 
 FROM ${BUILDER_IMAGE} AS builder
 
@@ -72,10 +72,10 @@ RUN groupadd --gid 1000 toor \
 # Set the locale
 RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen
 
-ENV LANG en_US.UTF-8
-ENV LANGUAGE en_US:en
-ENV LC_ALL en_US.UTF-8
-ENV RELEASE_COOKIE mysecretcookie
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US:en
+ENV LC_ALL=en_US.UTF-8
+ENV RELEASE_COOKIE=mysecretcookie
 ENV HOME=/app
 
 WORKDIR /app
